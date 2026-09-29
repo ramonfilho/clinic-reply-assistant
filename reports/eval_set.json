@@ -1,0 +1,22 @@
+{
+  "cutoff": "2026-08-01",
+  "conversations": 13573,
+  "messages": 206999,
+  "pairs": 33510,
+  "queries": 24725,
+  "train": {
+    "conversations": 10723,
+    "pairs": 30934,
+    "queries": 22694,
+    "canned_opener_queries": 9330
+  },
+  "heldout": {
+    "conversations": 1215,
+    "pairs": 2576,
+    "queries": 2031,
+    "canned_opener_queries": 924
+  },
+  "canned_opener_texts": 5,
+  "name_words_scrubbed": 5022,
+  "name_words_left_out_as_language": 378
+}

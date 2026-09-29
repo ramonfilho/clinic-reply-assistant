@@ -1,6 +1,6 @@
 # ADR 0005: A case is a patient turn and the clinic's next human reply
 
-Status: proposed, 2026-09-24, to confirm with the author before the turn code is written
+Status: accepted, 2026-09-24
 
 ## Context
 
@@ -12,7 +12,7 @@ The export lists the messages of each conversation from the newest to the oldest
 2. A case is a pair: a patient turn that has text, and the clinic turn that comes right after it, keeping only the messages written by a person (attendant in the field or in the bold prefix). A clinic turn with no human text gives no case.
 3. A patient turn is a query only when it keeps at least 3 words after greetings and one-word acknowledgments are removed (the list lives in the code). The reply to "Sim" is not something a system can suggest from that message alone.
 
-Measured on the export: 33,507 pairs, 25,243 of them with at least 3 content words. From the cutoff date of 2026-08-01 (ADR 0004): 3,507 pairs, 2,779 queries, in 1,602 conversations.
+Measured by the build script on the export: 33,510 pairs, 24,725 of them queries. Held out, as the conversations that start on or after 2026-08-01 (ADR 0004): 2,576 pairs, 2,031 queries, in 1,215 conversations.
 
 ## Alternatives considered
 
@@ -20,4 +20,4 @@ Pairing message with message was rejected because the reply answers the whole tu
 
 ## Consequences
 
-One pair in four is out of the evaluation as a short turn, and the README says the number covers content-carrying turns. The opener of the click-to-chat ads ("Oi! Gostaria de saber mais sobre a campanha de Harmonização...") is 1,048 of the 2,779 queries, and its reply is the same script every time, so the README reports recall at 5 twice: on all queries, and on the queries that are not a canned opener, where a canned opener is a query text that repeats verbatim 50 times or more in the training period.
+One pair in four is out of the evaluation as a short turn, and the README says the number covers content-carrying turns. The rule also drops 13 held-out questions of two words, such as "Qual valor?" and "Onde fica?", and the simple rule was kept over a list of exceptions. The openers of the click-to-chat ads ("Oi! Gostaria de saber mais sobre a campanha de Harmonização...") are 924 of the 2,031 held-out queries, and their reply is the same script every time, so the README reports recall at 5 twice: on all queries, and on the queries that are not a canned opener, where a canned opener is a query text that repeats verbatim 50 times or more in the training period (5 texts).

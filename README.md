@@ -1,6 +1,8 @@
 # clinic-reply-assistant
 
-Reply suggestions for the attendant of a clinic's WhatsApp line. For each new patient message, the system retrieves the replies the clinic gave to similar messages in its own history and suggests one. The attendant decides what to send.
+Vision: an automatic WhatsApp assistant for clinics that sells, schedules, updates the patient's status and follows up.
+
+Scope delivered here: the first step of that assistant. For each new patient message, the system retrieves the replies the clinic gave to similar messages in its own history, and an LLM writes the reply from them. The attendant decides what to send. Selling, scheduling, status updates and follow-up are later steps and are not in this repository.
 
 Status: in progress. The evaluation set is built before the retrieval code (ADR 0004).
 
@@ -8,7 +10,8 @@ Status: in progress. The evaluation set is built before the retrieval code (ADR 
 
 ```
 uv sync
-uv run pytest
+make test
+CLINIC_RAW_DIR=/path/to/export make eval-set   # writes data/processed/ and reports/eval_set.json
 ```
 
 ## Data
