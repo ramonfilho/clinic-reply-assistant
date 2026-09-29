@@ -34,6 +34,15 @@ def test_patient_messages_and_names(raw_dir):
     assert "Marina Castro" not in export.messages.to_string()
 
 
-def test_split_name_prefix_without_prefix_returns_the_text():
-    assert split_name_prefix("Oi, tudo bem?") == (None, "Oi, tudo bem?")
-    assert split_name_prefix("*Bia Prado*\r\n\r\nOi") == ("Bia Prado", "Oi")
+def test_a_bold_heading_is_not_a_signature(raw_dir):
+    messages = load_export(raw_dir).messages
+    heading = messages[messages["message_id"] == "m7"].iloc[0]
+    assert heading["author"] == "unknown"
+    assert heading["text"].startswith("*Campanha*")
+
+
+def test_bold_prefix_counts_only_for_a_known_attendant():
+    known = frozenset({"Bia Prado"})
+    assert split_name_prefix("*Bia Prado*\r\n\r\nOi", known) == ("Bia Prado", "Oi")
+    assert split_name_prefix("*Campanha*\n\nValores", known) == (None, "*Campanha*\n\nValores")
+    assert split_name_prefix("Oi, tudo bem?", known) == (None, "Oi, tudo bem?")

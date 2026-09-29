@@ -2,11 +2,13 @@
 
 What gets replaced, and by what:
 
-- e-mail addresses -> [EMAIL]
-- Brazilian phone numbers, with or without country code, area code and separators -> [PHONE]
+- e-mail addresses, even typed with a comma in place of a dot -> [EMAIL]
+- Instagram handles such as @dr.name -> [HANDLE]
 - CPF numbers written with their separators -> [CPF]
 - dates with a year, such as the birth date on the sign-up form -> [DATE]; an appointment
   date such as "22/07" keeps its day and month
+- Brazilian phone numbers, with or without country code, area code and separators -> [PHONE]
+- any other run of 8 digits or more (a bare CPF, a foreign phone, a document) -> [NUMBER]
 - names -> [NAME], for every word in the given set, matched whole, without regard to case
   or accents
 
@@ -21,13 +23,15 @@ import re
 import unicodedata
 from collections.abc import Iterable
 
-_EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
+_EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:[.,][\w-]+)*")
+_HANDLE = re.compile(r"(?<!\w)@\w[\w.]*\w")
 _CPF = re.compile(r"\b\d{3}\.\d{3}\.\d{3}-\d{2}\b")
 _FULL_DATE = re.compile(r"\b\d{1,2}/\d{1,2}/\d{2,4}\b")
 # +55 31 99999-1234, (31) 99999-1234, 31 9 9999-1234, 31999991234, 99999-1234
 _PHONE = re.compile(
     r"(?<!\d)(?:\+?55[\s.-]?)?(?:\(?\d{2}\)?[\s.-]?)?(?:9[\s.-]?)?\d{4}[\s.-]?\d{4}(?!\d)"
 )
+_LONG_NUMBER = re.compile(r"(?<!\d)\d{8,}(?:-\d{2})?(?!\d)")
 _WORD = re.compile(r"[^\W\d_]+")
 
 # Words that appear inside full names without being names.
@@ -40,26 +44,32 @@ def fold(word: str) -> str:
     return "".join(char for char in decomposed if not unicodedata.combining(char))
 
 
+def words(text: str) -> list[str]:
+    """The words of a text, folded, in order."""
+    return [fold(word) for word in _WORD.findall(text)]
+
+
 def name_words(
     names: Iterable[str], min_length: int = 3, ignore: Iterable[str] = CONNECTIVES
 ) -> frozenset[str]:
     """Split full names into folded words, dropping short ones and the words in ignore."""
     skip = {fold(word) for word in ignore}
-    words: set[str] = set()
+    found: set[str] = set()
     for name in names:
-        for word in _WORD.findall(name):
-            key = fold(word)
+        for key in words(name):
             if len(key) >= min_length and key not in skip:
-                words.add(key)
-    return frozenset(words)
+                found.add(key)
+    return frozenset(found)
 
 
 def scrub(text: str, names: frozenset[str] = frozenset()) -> str:
-    """Return the text with e-mails, CPFs, full dates, phones and the given names replaced."""
+    """Return the text with every kind of personal data listed above replaced by its tag."""
     text = _EMAIL.sub("[EMAIL]", text)
+    text = _HANDLE.sub("[HANDLE]", text)
     text = _CPF.sub("[CPF]", text)
     text = _FULL_DATE.sub("[DATE]", text)
     text = _PHONE.sub("[PHONE]", text)
+    text = _LONG_NUMBER.sub("[NUMBER]", text)
     if names:
         text = _WORD.sub(lambda m: "[NAME]" if fold(m.group()) in names else m.group(), text)
     return text

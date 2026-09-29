@@ -49,6 +49,7 @@ def raw_dir(tmp_path):
         "ultima_msg": "m6",
         "n_msgs": 2,
         "mensagens": [
+            _message("m7", True, "*Campanha*\n\nValores da campanha", 1_700_000_700),
             _message("m6", False, "", 1_700_000_600, tipo="audio"),
             _message("m5", False, "Qual o endereço?", 1_700_000_500),
         ],

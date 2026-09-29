@@ -15,6 +15,16 @@ def test_email_and_cpf():
     assert scrub("CPF 123.456.789-00, certo?") == "CPF [CPF], certo?"
 
 
+def test_bare_cpf_and_other_long_numbers():
+    assert scrub("CPF 26500108604") == "CPF [NUMBER]"
+    assert scrub("cpf: 882366336-91 ok") == "cpf: [NUMBER] ok"
+
+
+def test_instagram_handles_and_broken_emails():
+    assert scrub("segue a gente @dr.fulano no insta") == "segue a gente [HANDLE] no insta"
+    assert scrub("email: ana.silva14@hotmail,com.br") == "email: [EMAIL]"
+
+
 def test_birth_date_goes_and_appointment_date_stays():
     text = "nasci em 12/05/1990, consulta dia 22/07 às 10:00"
     assert scrub(text) == "nasci em [DATE], consulta dia 22/07 às 10:00"

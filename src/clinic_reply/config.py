@@ -14,8 +14,23 @@ REPORTS_DIR = REPO_ROOT / "reports"
 # The raw export is read from this folder and never copied into the repository.
 RAW_DIR = Path(os.environ.get("CLINIC_RAW_DIR", DATA_DIR / "raw"))
 
+TIMEZONE = "America/Sao_Paulo"
+
 # Conversations that start on or after this date form the held-out set (ADR 0004).
 CUTOFF_DATE = "2026-08-01"
 
 # A patient turn needs at least this many content words to count as a query (ADR 0005).
 MIN_CONTENT_WORDS = 3
+
+# A query text that repeats verbatim at least this many times in the training period is a
+# canned opener, such as the message the click-to-chat ad fills in (ADR 0005).
+CANNED_OPENER_MIN_COUNT = 50
+
+# A word from a profile name that appears in more than this share of the messages is ordinary
+# language ("clinica", "tudo") and is not scrubbed as a name (ADR 0003).
+NAME_MAX_MESSAGE_SHARE = 0.005
+
+# Below that share, a profile word is a name when it is written with a capital letter in at
+# least this share of its appearances in the middle of a sentence ("Oi Maria" against
+# "seus olhos").
+NAME_MIN_CAPITALIZED_SHARE = 0.5
