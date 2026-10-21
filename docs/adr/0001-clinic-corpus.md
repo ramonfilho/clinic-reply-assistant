@@ -4,7 +4,7 @@ Status: accepted, 2026-09-24
 
 ## Context
 
-This self-imposed take-home has to produce a public repository with a measured number in 8 hours of work, and it has to be a retrieval-augmented system, because 19 of the 69 job descriptions in the application tracker ask for LLM or RAG experience. Two data sources were available. One is the Bring Data lead-scoring project, which the author runs in production. The other is 13,583 WhatsApp conversations (206,999 messages) collected from one aesthetic clinic through BotConversa, for a product built with a partner whose clinic software has about 30 clients.
+This self-imposed take-home has to produce a public repository with a measured number in 8 hours of work, and it has to be a retrieval-augmented system, because 19 of the 69 job descriptions in the application tracker ask for LLM or RAG experience. Two data sources were available. One is the Bring Data lead-scoring project, which the author runs in production. The other is 13,583 WhatsApp conversations (206,999 messages) collected from one aesthetic clinic through BotConversa.
 
 ## Decision
 
