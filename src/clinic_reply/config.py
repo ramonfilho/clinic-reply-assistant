@@ -34,3 +34,15 @@ NAME_MAX_MESSAGE_SHARE = 0.005
 # least this share of its appearances in the middle of a sentence ("Oi Maria" against
 # "seus olhos").
 NAME_MIN_CAPITALIZED_SHARE = 0.5
+
+# Every retriever returns this many replies per query, and recall is measured at this k
+# (ADR 0002).
+TOP_K = 5
+
+# The seed of the random baseline, so its row is the same on every run (ADR 0006).
+RANDOM_SEED = 0
+
+# The embedding model of row 5, run on the author's machine, and the prefix it expects on
+# both sides when it compares a text with texts of the same kind (ADR 0008).
+EMBEDDING_MODEL = "intfloat/multilingual-e5-small"
+EMBEDDING_PREFIX = "query: "

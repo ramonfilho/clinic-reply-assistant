@@ -8,7 +8,7 @@ ADR 0004 and item 4 of the brief ask for "a lexical baseline" as the first row o
 
 ## Decision
 
-1. The metric script computes recall at 5 (ADR 0002) for four methods before any embedding, each one a row of the results table, on all queries and on the queries that are not a canned opener:
+1. The metric script computes recall at 5 (ADR 0002) for four methods before any embedding, each one a row of the results table, on all queries and on the queries that are not a canned opener. The index every method searches is the training pairs whose patient turn is a query (rule 3 of ADR 0005): a short turn such as "Sim" gets a reply that depends on the clinic's previous question, so it would answer a new patient out of context.
    1. Random: five replies drawn at random from the index, with a fixed seed. The floor.
    2. Most frequent: the five most frequent replies of the index, the same for every query. The floor of a system that never reads the message.
    3. Exact match: the replies given to index queries whose text is identical to the new query, most recent first, when any exists. Answers the canned openers with no model.
@@ -23,3 +23,9 @@ Starting with the embedding model and adding a baseline afterwards was rejected 
 ## Consequences
 
 The results table opens with four rows before the first embedding row. Rows 1 and 2 are floors, row 3 measures what the canned openers give on their own, and row 4 is the line every model has to beat. A method cannot score itself, because the judge is not the retriever. The 50 hand-labeled cases come before the first number, and the agreement between the labels and the threshold is reported in the README.
+
+## Amendment (2026-09-30)
+
+The first round of 50 labels (2026-09-29) set the threshold at 0.13 with 49 of 50 in agreement, and the random row then scored 0.569 on the queries that are not canned openers, which says the judge was too lenient rather than the retrievers good. Two causes showed up in the sample: 25 of the 50 cases sat above 0.8 of similarity, 20 of them canned openers that any threshold gets right, and every case came from the TF-IDF row, while the judge scores all four. A second round of 30 cases draws only non-canned queries from the band between 0.05 and 0.60, half from the random row and half from TF-IDF, and the threshold is set once on the 80 cases together. The README reports the agreement per round.
+
+The same day the author asked for recall at 1 next to recall at 5, and the script reports both. With the judge set on the 80 cases (threshold 0.14, 86% agreement), a single random reply matches the real one in about one query in seven, because the clinic answers from a script with few steps, and five random replies reach about half the queries. Recall at 1 separates the methods where recall at 5 compresses them.

@@ -1,0 +1,71 @@
+{
+  "measured_on": "2026-09-30",
+  "k": 5,
+  "index_pairs": 22694,
+  "queries": 2031,
+  "queries_not_canned": 1107,
+  "judge": {
+    "threshold": 0.14,
+    "agreement": 0.863,
+    "cases": 80,
+    "rounds": {
+      "judge_labels": 50,
+      "judge_labels_round2": 30
+    },
+    "labeled_same": 51,
+    "tied_thresholds": [
+      0.12,
+      0.13,
+      0.14,
+      0.3
+    ],
+    "labeled_on": "2026-09-30"
+  },
+  "rows": [
+    {
+      "method": "random",
+      "recall_at_1_all": 0.168,
+      "recall_at_1_not_canned": 0.168,
+      "recall_at_5_all": 0.581,
+      "recall_at_5_not_canned": 0.525,
+      "setup_seconds": 0.0,
+      "seconds_per_1000_queries": 0.0
+    },
+    {
+      "method": "most_frequent",
+      "recall_at_1_all": 0.553,
+      "recall_at_1_not_canned": 0.184,
+      "recall_at_5_all": 0.666,
+      "recall_at_5_not_canned": 0.388,
+      "setup_seconds": 0.0,
+      "seconds_per_1000_queries": 0.0
+    },
+    {
+      "method": "exact_match",
+      "recall_at_1_all": 0.486,
+      "recall_at_1_not_canned": 0.061,
+      "recall_at_5_all": 0.492,
+      "recall_at_5_not_canned": 0.068,
+      "setup_seconds": 0.0,
+      "seconds_per_1000_queries": 0.01
+    },
+    {
+      "method": "tfidf",
+      "recall_at_1_all": 0.715,
+      "recall_at_1_not_canned": 0.481,
+      "recall_at_5_all": 0.9,
+      "recall_at_5_not_canned": 0.819,
+      "setup_seconds": 0.1,
+      "seconds_per_1000_queries": 0.48
+    },
+    {
+      "method": "embedding",
+      "recall_at_1_all": 0.715,
+      "recall_at_1_not_canned": 0.481,
+      "recall_at_5_all": 0.898,
+      "recall_at_5_not_canned": 0.817,
+      "setup_seconds": 20.7,
+      "seconds_per_1000_queries": 0.44
+    }
+  ]
+}

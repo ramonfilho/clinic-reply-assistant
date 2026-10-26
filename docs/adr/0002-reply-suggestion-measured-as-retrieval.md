@@ -16,7 +16,7 @@ Answering the patient directly with generation only was rejected because there w
 
 ## Consequences
 
-The metric of stage one is recall at 5 on held-out conversations: the share of new patient messages for which one of the five retrieved replies says the same thing the attendant actually answered. "Says the same thing" is decided by a similarity threshold between the retrieved reply and the real one, and the threshold is checked by hand on 50 cases before it is used. Stage two is judged on a sample of 100 cases.
+The metric of stage one is recall at 5 on held-out conversations: the share of new patient messages for which one of the five retrieved replies says the same thing the attendant actually answered. The five are not a list for the attendant to read: they are the material stage two hands to the language model, which reads them and writes one reply, so the metric asks whether that material holds the right answer. "Says the same thing" is decided by a similarity threshold between the retrieved reply and the real one, and the threshold is checked by hand on 50 cases before it is used. Stage two is judged on a sample of 100 cases.
 
 ## Amendment (2026-09-28)
 
