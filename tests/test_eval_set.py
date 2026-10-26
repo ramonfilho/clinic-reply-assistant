@@ -7,11 +7,11 @@ from clinic_reply.load import Export
 def test_build_writes_scrubbed_pairs_and_counts(raw_dir, tmp_path):
     out_dir = tmp_path / "processed"
     summary = build_eval_set(raw_dir, out_dir, cutoff="2030-01-01", max_name_share=1.0)
-    train = pd.read_parquet(out_dir / "pairs_train.parquet")
+    index_pairs = pd.read_parquet(out_dir / "pairs_index.parquet")
     assert summary["pairs"] == 1
-    assert summary["heldout"]["pairs"] == 0
-    assert train.loc[0, "query"] == "Quero saber da campanha. Meu número é [PHONE]"
-    assert train.loc[0, "reply"] == "Oi [NAME], tudo bem?\nPosso te passar a campanha?"
+    assert summary["eval"]["pairs"] == 0
+    assert index_pairs.loc[0, "query"] == "Quero saber da campanha. Meu número é [PHONE]"
+    assert index_pairs.loc[0, "reply"] == "Oi [NAME], tudo bem?\nPosso te passar a campanha?"
 
 
 def test_profile_words_that_are_ordinary_language_are_not_scrubbed():
@@ -32,14 +32,14 @@ def test_profile_words_written_in_lower_case_are_language_not_names():
 
 def test_canned_opener_is_a_query_text_that_repeats_in_the_training_period():
     opener = "Oi! Gostaria de saber mais sobre a campanha"
-    train = pd.DataFrame(
+    pairs = pd.DataFrame(
         {
             "query": [opener, opener, "Quanto custa o botox?", opener],
             "is_query": [True, True, True, False],
         }
     )
-    assert canned_opener_texts(train, min_count=2) == {opener}
-    assert canned_opener_texts(train, min_count=3) == set()
+    assert canned_opener_texts(pairs, min_count=2) == {opener}
+    assert canned_opener_texts(pairs, min_count=3) == set()
 
 
 def test_build_flags_canned_openers_from_the_training_count(raw_dir, tmp_path):
@@ -47,7 +47,7 @@ def test_build_flags_canned_openers_from_the_training_count(raw_dir, tmp_path):
     summary = build_eval_set(
         raw_dir, out_dir, cutoff="2030-01-01", max_name_share=1.0, canned_min_count=1
     )
-    train = pd.read_parquet(out_dir / "pairs_train.parquet")
+    index_pairs = pd.read_parquet(out_dir / "pairs_index.parquet")
     assert summary["canned_opener_texts"] == 1
-    assert summary["train"]["canned_opener_queries"] == 1
-    assert bool(train.loc[0, "canned_opener"]) is True
+    assert summary["index"]["canned_opener_queries"] == 1
+    assert bool(index_pairs.loc[0, "canned_opener"]) is True

@@ -65,13 +65,13 @@ def build_name_set(
     return frozenset((candidates | attendants) - language), sorted(language)
 
 
-def canned_opener_texts(train: pd.DataFrame, min_count: int = CANNED_OPENER_MIN_COUNT) -> set[str]:
+def canned_opener_texts(pairs: pd.DataFrame, min_count: int = CANNED_OPENER_MIN_COUNT) -> set[str]:
     """Query texts that repeat verbatim at least min_count times among the training queries.
 
     These are the openers the click-to-chat ads fill in (ADR 0005). Only the training period
     counts, so a text that appears only after the cutoff is never a canned opener.
     """
-    counts = train.loc[train["is_query"], "query"].value_counts()
+    counts = pairs.loc[pairs["is_query"], "query"].value_counts()
     return set(counts[counts >= min_count].index)
 
 
@@ -92,22 +92,22 @@ def build_eval_set(
     max_name_share: float = NAME_MAX_MESSAGE_SHARE,
     canned_min_count: int = CANNED_OPENER_MIN_COUNT,
 ) -> dict:
-    """Write pairs_train.parquet and pairs_heldout.parquet to out_dir and return the counts."""
+    """Write pairs_index.parquet and pairs_eval.parquet to out_dir and return the counts."""
     export = load_export(raw_dir)
     names, left_out = build_name_set(export, max_name_share)
     messages = export.messages.copy()
     messages["text"] = [scrub(text, names) if text else text for text in messages["text"]]
 
     pairs = pair_turns(messages)
-    train, heldout = split_by_conversation_start(pairs, cutoff)
-    canned = canned_opener_texts(train, canned_min_count)
-    for frame in (train, heldout):
+    index_pairs, eval_pairs = split_by_conversation_start(pairs, cutoff)
+    canned = canned_opener_texts(index_pairs, canned_min_count)
+    for frame in (index_pairs, eval_pairs):
         frame["canned_opener"] = frame["query"].isin(canned)
 
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    train.to_parquet(out_dir / "pairs_train.parquet", index=False)
-    heldout.to_parquet(out_dir / "pairs_heldout.parquet", index=False)
+    index_pairs.to_parquet(out_dir / "pairs_index.parquet", index=False)
+    eval_pairs.to_parquet(out_dir / "pairs_eval.parquet", index=False)
     (out_dir / "name_words_left_out.txt").write_text("\n".join(left_out) + "\n", encoding="utf-8")
     return {
         "cutoff": cutoff,
@@ -115,8 +115,8 @@ def build_eval_set(
         "messages": int(len(messages)),
         "pairs": int(len(pairs)),
         "queries": int(pairs["is_query"].sum()),
-        "train": _counts(train),
-        "heldout": _counts(heldout),
+        "index": _counts(index_pairs),
+        "eval": _counts(eval_pairs),
         "canned_opener_texts": len(canned),
         "name_words_scrubbed": len(names),
         "name_words_left_out_as_language": len(left_out),

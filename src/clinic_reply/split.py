@@ -15,6 +15,6 @@ from clinic_reply.config import CUTOFF_DATE, TIMEZONE
 def split_by_conversation_start(
     pairs: pd.DataFrame, cutoff: str = CUTOFF_DATE
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Return (train, heldout) by the start of each case's conversation."""
+    """Return (index_pairs, eval_pairs) by the start of each case's conversation."""
     held_out = pairs["conversation_start"] >= pd.Timestamp(cutoff, tz=TIMEZONE)
     return pairs[~held_out].reset_index(drop=True), pairs[held_out].reset_index(drop=True)

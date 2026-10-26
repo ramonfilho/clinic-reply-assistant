@@ -4,13 +4,13 @@
   "messages": 206999,
   "pairs": 33510,
   "queries": 24725,
-  "train": {
+  "index": {
     "conversations": 10723,
     "pairs": 30934,
     "queries": 22694,
     "canned_opener_queries": 9330
   },
-  "heldout": {
+  "eval": {
     "conversations": 1215,
     "pairs": 2576,
     "queries": 2031,
